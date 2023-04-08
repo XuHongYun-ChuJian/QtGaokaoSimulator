@@ -11,8 +11,8 @@ NetConnection::NetConnection(QObject *parent) :
 NetConnection::~NetConnection()
 {
     qDebug()<< __FUNCTION__;
-    delete pTimer;
-    delete pTcpSocket;
+//    delete pTimer;
+//    delete pTcpSocket;
 }
 
 void NetConnection::connectToHost(QString hostName, quint16 port)
@@ -38,7 +38,7 @@ void NetConnection::init()
 
     pTimer = new QTimer();
     pTimer->setSingleShot(true);
-    pTimer->setInterval(2000);
+    pTimer->setInterval(10000);
     connect(pTimer , &QTimer::timeout , this , [=](){
         pTcpSocket->connectToHost(pHostName , pPort);
     });

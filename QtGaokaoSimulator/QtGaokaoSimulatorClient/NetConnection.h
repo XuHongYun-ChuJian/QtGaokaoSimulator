@@ -31,7 +31,7 @@ signals:
     void connected();
     void disconnected();
     void error(QAbstractSocket::SocketError socketError);
-    void receiveData(const QByteArray &data);
+    void receiveData( QByteArray data);
 
 public slots:
     void write(const QByteArray &data);

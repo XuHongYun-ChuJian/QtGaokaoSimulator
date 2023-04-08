@@ -15,10 +15,14 @@ MainWidget::MainWidget(QWidget *parent)
     QTimer::singleShot(1000 , this , [=](){
         pNetConnection.initConnection("127.0.0.1" , 6000);
     });
+
+    initLogin();
 }
 
 MainWidget::~MainWidget()
 {
+    delete pLoginWidgt;
+
     pThread.exit();
     pThread.wait();
     delete ui;
@@ -26,6 +30,10 @@ MainWidget::~MainWidget()
 
 void MainWidget::initLogin()
 {
-    pLoginWidgt = new LoginWidgt(this);
+    pLoginWidgt = new LoginWidgt();
+    pLoginWidgt->show();
+
+    connect(pLoginWidgt , &LoginWidgt::sendMsg , &pNetConnection , &NetConnection::write);
+    connect(&pNetConnection , &NetConnection::receiveData , pLoginWidgt , &LoginWidgt::slotDealMgs);
 }
 

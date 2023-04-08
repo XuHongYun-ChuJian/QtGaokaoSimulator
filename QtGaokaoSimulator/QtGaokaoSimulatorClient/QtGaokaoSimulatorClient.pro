@@ -15,16 +15,18 @@ SOURCES += \
     MainWidget.cpp
 
 HEADERS += \
+    ../Common.h \
     ILog.h \
     LoginWidgt.h \
     MainWidget.h \
-    NetConnection.h
+    NetConnection.h\
+    head.h
 
 FORMS += \
     loginwidgt.ui \
     mainwidget.ui
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+RESOURCES   += $$PWD/core_qss/qss.qrc
+
+INCLUDEPATH += $$PWD/core_base
+include($$PWD/core_base/core_base.pri)
