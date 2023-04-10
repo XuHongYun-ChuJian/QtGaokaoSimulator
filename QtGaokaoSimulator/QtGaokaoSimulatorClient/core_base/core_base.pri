@@ -55,9 +55,6 @@ SOURCES += $$PWD/quihelper.cpp
 RESOURCES += $$PWD/qrc/image.qrc
 }
 
-!contains(DEFINES, no_qrc_qm) {
-RESOURCES += $$PWD/qrc/qm.qrc
-}
 
 !contains(DEFINES, no_qrc_font) {
 RESOURCES += $$PWD/qrc/font.qrc

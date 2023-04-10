@@ -12,9 +12,11 @@
 
 #include <QWidget>
 #include <QThread>
+#include <QToolButton>
 #include "NetConnection.h"
 
 #include "LoginWidgt.h"
+#include <QSqlDatabase>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWidget; }
@@ -30,6 +32,25 @@ public:
 
     void initLogin();
 
+    void initForm();
+    void initNavLeft();
+    void initNavTop();
+    void setStyle(QWidget *widget, int borderWidth = 3, QString borderColor = "#029FEA",
+                  QString normalBgColor = "#292F38", QString selectBgColor = "#1D2025",
+                  QString normalTextColor = "#54626F", QString selectTextColor = "#FDFDFD");
+
+    void initSql();
+
+private slots:
+    void buttonClickedLeft();
+
+private slots:
+    void on_btnMenu_Min_clicked();
+    void on_btnMenu_Max_clicked();
+    void on_btnMenu_Close_clicked();
+
+    void on_btnQuery_clicked();
+
 private:
     Ui::MainWidget *ui;
 
@@ -37,5 +58,12 @@ private:
     QThread pThread;
 
     LoginWidgt *pLoginWidgt{nullptr};
+
+    QList<int> pixCharLeft;
+    QList<QPixmap> pixNormalLeft;
+    QList<QPixmap> pixDarkLeft;
+    QList<QToolButton *> tbtnLeft;
+
+    QSqlDatabase pSql;
 };
 #endif // MAINWIDGET_H
