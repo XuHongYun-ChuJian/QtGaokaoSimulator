@@ -1,10 +1,12 @@
-#include "MainWidget.h"
+﻿#include "MainWidget.h"
 #include "ui_mainwidget.h"
 #include "iconhelper.h"
 #include "ILog.h"
 #include <QSqlError>
 #include <QFileDialog>
 #include <QSqlQuery>
+
+#define DATABASENAME "database.sqlite3"
 
 MainWidget::MainWidget(QWidget *parent)
     : QWidget(parent)
@@ -24,7 +26,7 @@ MainWidget::MainWidget(QWidget *parent)
         pNetConnection.initConnection("127.0.0.1" , 6000);
     });
 
-    initLogin();
+//    initLogin();
     initSql();
 }
 
@@ -52,7 +54,7 @@ void MainWidget::initForm()
     this->setProperty("canMove", true);
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
 
-    this->setWindowTitle("智能访客管理平台");
+    this->setWindowTitle("志愿填报系统");
 
     IconHelper::Instance()->setIcon(ui->labTitle, QChar(0xf072), 35);
     IconHelper::Instance()->setIcon(ui->btnMenu_Min, QChar(0xf068));
@@ -177,12 +179,16 @@ void MainWidget::setStyle(QWidget *widget, int borderWidth, QString borderColor,
 
 void MainWidget::initSql()
 {
-    LOG_INFO()<< QSqlDatabase::drivers();
-    QString sqlFile = QFileDialog::getOpenFileName(this , "" , ".");
-    LOG_INFO()<< sqlFile;
+    QString sqlFilePath = QApplication::applicationDirPath() + QDir::separator() + DATABASENAME;
+    if(!QFile::exists(sqlFilePath) )
+    {
+        LOG_CRIT()<< "Sql file not exists!!!";
+        return;
+    }
+    LOG_INFO()<< sqlFilePath;
     pSql = QSqlDatabase::addDatabase("QSQLITE");
     pSql.setHostName("127.0.0.1");
-    pSql.setDatabaseName(sqlFile);
+    pSql.setDatabaseName(sqlFilePath);
     pSql.setUserName("127.0.0.1");
     pSql.setPassword("123456");
     if( !pSql.open() )
@@ -250,12 +256,32 @@ void MainWidget::on_btnQuery_clicked()
         return;
     }
 
-    QSqlQuery query(pSql);
-    query.exec("SELECT exam_number FROM student;");
-    qDebug()<< query.lastError();
+    QString examNum = ui->lineEdit_admissonNum->text();
+    QString examID = ui->lineEdit_candidateNum->text();
+    if( examNum.isEmpty() || examID.isEmpty())
+    {
+        QMessageBox::warning(this , "提示" , "考号和准考证号不能为空!");
+        return;
+    }
+    QSqlQuery query;
+    QString sql = "SELECT * FROM student WHERE exam_number = :exam_number AND admission_number = :admission_number;";
+    query.prepare(sql);
+    query.bindValue(":exam_number", examNum);
+    query.bindValue(":admission_number", examID);
+    if( !query.exec())
+    {
+        QMessageBox::warning(this , "错误" , query.lastError().text());
+        return;
+    }
+
+    qDebug()<< query.size();
+    if( query.size() <= 0)
+    {
+        QMessageBox::information(this , "提示" , "没有查到该考生的信息!");
+        return;
+    }
     while (query.next()) {
-        int exam_number = query.value(0).toInt();
-        qDebug() << "Exam Number:" << exam_number;
+        qInfo()<< query.value("name").toString();
     }
 }
 

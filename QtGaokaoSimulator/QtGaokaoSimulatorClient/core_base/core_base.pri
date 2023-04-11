@@ -12,12 +12,6 @@ RCC_DIR     = temp/rcc
 UI_DIR      = temp/ui
 OBJECTS_DIR = temp/obj
 
-#指定编译生成的可执行文件放到源码上一级目录下的bin目录
-!android {
-!wasm {
-DESTDIR = $$PWD/../bin
-}}
-
 #把所有警告都关掉眼不见为净
 CONFIG += warn_off
 #开启大资源支持
